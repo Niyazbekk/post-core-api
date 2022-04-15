@@ -1,6 +1,7 @@
 package com.example.postcoreapi.controller;
 
 import com.example.postcoreapi.model.PostModel;
+import com.example.postcoreapi.repository.PostEntity;
 import com.example.postcoreapi.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -28,25 +29,25 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createPost(@Valid @RequestBody PostModel postModel) {
-        postService.createPost(postModel);
+    public ResponseEntity<String> createPost(@Valid @RequestBody PostEntity postEntity) {
+        postService.createPost(postEntity);
         return new ResponseEntity<>("Successfully created", HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public List<PostModel> getAllPosts(){
+    public List<PostEntity> getAllPosts(){
         return postService.getAllPosts();
     }
 
     @GetMapping("/{postID}")
-    public PostModel getPostById(@PathVariable String postID) {
+    public PostEntity getPostById(@PathVariable String postID) {
         return postService.getPostById(postID);
     }
 
     @PutMapping("/{postID}")
     public ResponseEntity<String> updatePostById(@PathVariable String postID,
-                                                     @Valid @RequestBody PostModel postModel) {
-        postService.updatePostById(postID, postModel);
+                                                     @Valid @RequestBody PostEntity postEntity) {
+        postService.updatePostById(postID, postEntity);
         return new ResponseEntity<>("Successfully updated", HttpStatus.OK);
     }
 

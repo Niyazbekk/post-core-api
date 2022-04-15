@@ -1,18 +1,19 @@
 package com.example.postcoreapi.service;
 
 import com.example.postcoreapi.model.PostModel;
+import com.example.postcoreapi.repository.PostEntity;
 
 import java.util.List;
 
 public interface PostService {
 
-    void createPost(PostModel postModel);
+    String createPost(PostEntity postEntity);
 
-    List<PostModel> getAllPosts();
+    List<PostEntity> getAllPosts();
 
-    PostModel getPostById(String postID);
+    PostEntity getPostById(String postID);
 
-    void updatePostById(String postID , PostModel postModel);
+    void updatePostById(String postID , PostEntity postEntity);
 
     void deletePostById(String postID);
 
