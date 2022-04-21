@@ -1,6 +1,8 @@
 package com.example.postcoreapi.service;
 
-import com.example.postcoreapi.model.PostModel;
+
+import com.example.postcoreapi.model.PostRequest;
+import com.example.postcoreapi.model.PostResponse;
 import com.example.postcoreapi.repository.PostEntity;
 import com.example.postcoreapi.repository.PostRepository;
 import org.modelmapper.ModelMapper;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService{
@@ -23,37 +26,42 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public String createPost(PostEntity postEntity){
-        postEntity.setPostID(UUID.randomUUID().toString());
-        postRepository.save(postEntity);
-        return "OK";
+    public PostResponse createPost(PostRequest postRequest){
+        postRequest.setPostID(UUID.randomUUID().toString());
+
+        PostEntity postEntity = modelMapper.map(postRequest,PostEntity.class);
+        postEntity = postRepository.save(postEntity);
+        return modelMapper.map(postEntity, PostResponse.class);
     };
 
     @Override
-    public List<PostEntity> getAllPosts(){
-        return (List<PostEntity>) postRepository.findAll();
+    public List<PostResponse> getAllPosts(){
+        return postRepository.getPostEntitiesBy().stream()
+                .map(post -> modelMapper.map(post,PostResponse.class))
+                .collect(Collectors.toList());
     };
 
     @Override
-    public PostEntity getPostById(String postID){
-        return postRepository.getPostEntityByPostID(postID);
+    public PostResponse getPostById(String postID){
+        PostEntity postEntity = postRepository.getPostEntityByPostID(postID);
+        return modelMapper.map(postEntity, PostResponse.class);
     };
 
     @Override
-    public void updatePostById(String postID , PostEntity postEntity){
-        PostEntity dbEntity = postRepository.getPostEntityByPostID(postID);
-        dbEntity.setPostID(postEntity.getPostID());
-        dbEntity.setPostItem(postEntity.getPostItem());
-        dbEntity.setClientID(postEntity.getClientID());
-        dbEntity.setPostRecipientId(postEntity.getPostRecipientId());
-        dbEntity.setStatus(postEntity.getStatus());
+    public PostResponse updatePostById(PostRequest postRequest){
+        PostEntity postEntity = modelMapper.map(postRequest, PostEntity.class);
 
-        postRepository.save(dbEntity);
+        PostEntity dbEntity = postRepository.getPostEntityByPostID(postRequest.getPostID());
+        postEntity.setId(dbEntity.getId());
+
+        postEntity = postRepository.save(postEntity);
+
+        return modelMapper.map(postEntity, PostResponse.class);
     };
 
     @Override
-    public void deletePostById(String postID){
-        postRepository.deletePostEntitiesByPostID(postID);
+    public PostResponse deletePostById(String postID){
+        return postRepository.deletePostEntitiesByPostID(postID);
     };
 
 }

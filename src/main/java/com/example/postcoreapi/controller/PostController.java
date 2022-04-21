@@ -1,6 +1,7 @@
 package com.example.postcoreapi.controller;
 
-import com.example.postcoreapi.model.PostModel;
+import com.example.postcoreapi.model.PostRequest;
+import com.example.postcoreapi.model.PostResponse;
 import com.example.postcoreapi.repository.PostEntity;
 import com.example.postcoreapi.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,32 +30,28 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createPost(@Valid @RequestBody PostEntity postEntity) {
-        postService.createPost(postEntity);
-        return new ResponseEntity<>("Successfully created", HttpStatus.OK);
+    public PostResponse createPost(@Valid @RequestBody PostRequest postRequest) {
+        return postService.createPost(postRequest);
     }
 
     @GetMapping("/all")
-    public List<PostEntity> getAllPosts(){
+    public List<PostResponse> getAllPosts(){
         return postService.getAllPosts();
     }
 
     @GetMapping("/{postID}")
-    public PostEntity getPostById(@PathVariable String postID) {
+    public PostResponse getPostById(@PathVariable String postID) {
         return postService.getPostById(postID);
     }
 
     @PutMapping("/{postID}")
-    public ResponseEntity<String> updatePostById(@PathVariable String postID,
-                                                     @Valid @RequestBody PostEntity postEntity) {
-        postService.updatePostById(postID, postEntity);
-        return new ResponseEntity<>("Successfully updated", HttpStatus.OK);
+    public PostResponse updatePostById(@Valid @RequestBody PostRequest postRequest) {
+        return postService.updatePostById(postRequest);
     }
 
     @DeleteMapping("/{postID}")
-    public ResponseEntity<String> deletePostById(@PathVariable String postID) {
-        postService.deletePostById(postID);
-        return new ResponseEntity<>("Successfully deleted", HttpStatus.OK);
+    public PostResponse deletePostById(@PathVariable String postID) {
+        return postService.deletePostById(postID);
     }
 
 }
